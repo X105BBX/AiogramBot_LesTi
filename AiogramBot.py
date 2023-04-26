@@ -32,7 +32,7 @@ async def xl(message: Message):
     await message.answer_document(message.document.file_id)
 
 
-@dp.message_handler(commands='thr-')
+@dp.message_handler(commands='thrr')
 async def tcr_remove(message: Message):
     my_date = date.today()
     day = calendar.day_name[my_date.weekday()]
