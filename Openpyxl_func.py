@@ -1,9 +1,12 @@
 import openpyxl
 import pandas
 import re
+import os
+import datetime
 
 letter = [i for i in 'ABCDEFGHIJKLMN']
-wbook = openpyxl.open('C:\\Users\\Дмитрий\\PycharmProjects\\Da\\documents\\Расписание уроков.xlsx')
+book_file_name = os.path.join('documents', 'Расписание уроков.xlsx')
+wbook = openpyxl.open(book_file_name)
 ws = wbook.active
 
 
@@ -13,6 +16,7 @@ def WithoutTeacher(full_name, next_day):
     for sheet_teacher in ws['D49':'D75']:
         for cell_teacher in sheet_teacher:
             teachers.append(cell_teacher.value)
+
     for sheet_day in ws['B2':'B38']:
         for cell_day in sheet_day:
             if cell_day.value == f'{next_day}':
@@ -20,62 +24,51 @@ def WithoutTeacher(full_name, next_day):
                 position_day_2 = letter[cell_day.column + 8] + str(cell_day.row + 8)
                 position_day_3 = letter[cell_day.column + 9] + str(cell_day.row + 1)
                 position_day_4 = letter[cell_day.column + 11] + str(cell_day.row + 8)
+
+    cabinet = ""
     for teacher in teachers:
         if re.search(f'{full_name}', f'{teacher}'):
             for sheet_cabinet in ws['D49':'D75']:
                 for cell_cabinet in sheet_cabinet:
                     if cell_cabinet.value == teacher:
                         cabinet = letter[cell_cabinet.column] + str(cell_cabinet.row)
-                        cabinet_number = ws[f'{cabinet}']
-                        for sheet in ws[f'{position_day_1}':f'{position_day_2}']:
-                            for cell in sheet:
-                                if re.search(cabinet_number.value[1:4], f'{cell.value}'):
-                                    pos_les = letter[cell.column - 1] + str(cell.row)
-                                    lessons.append([cell.column, cell.value])
-                                    ws[f'{pos_les}'] = ''
-    for sheet_lesson in ws[f'{position_day_1}':f'{position_day_2}']:
-        for cell_lesson in sheet_lesson:
-            if cell_lesson.value == '':
-                ln = []
-                k = 0
-                pln_1 = letter[cell_lesson.column - 1] + str(cell_lesson.row)
-                pln_2 = letter[cell_lesson.column - 1] + str(cell_lesson.row + 7)
-                for sln in ws[f'{pln_1}':f'{pln_2}']:
-                    if k < 1:
-                        for cln in sln:
-                            if cln.value == '' or cln.value is None:
-                                pass
-                            elif re.fullmatch(r'[1]?[019].', f'{cln.value}'):
-                                k += 1
-                                break
-                            else:
-                                ln.append(cln.value)
-                                ws[f'{letter[cln.column - 1] + str(cln.row)}'] = ''
-                if len(ln) > 1:
-                    count = 0
-                    for sl in ws[f'{pln_1}':f'{pln_2}']:
-                        for cl in sl:
-                            try:
-                                ws[f'{letter[cl.column - 1] + str(cl.row)}'] = ln[count]
-                                count += 1
-                            except IndexError:
-                                break
+
+    if len(cabinet) > 0:
+        wc = get_week_sheet()
+        cabinet_number = wc[f'{cabinet}']
+        for sheet in wc[f'{position_day_1}':f'{position_day_2}']:
+            for cell in sheet:
+                if re.search(cabinet_number.value[1:4], f'{cell.value}'):
+                    pos_les = letter[cell.column - 1] + str(cell.row)
+                    lessons.append([cell.column, cell.value])
+                    wc[f'{pos_les}'] = ''
+        wbook.save(book_file_name)
     return True
 
 
+def get_week_sheet():
+    week_num = str(datetime.date.today().isocalendar()[1])
+    if week_num in wbook.sheetnames:
+        return wbook[week_num]
+    else:
+        target = wbook.copy_worksheet(ws)
+        target.title = week_num
+        return target
+
 def LesPlan(is_class, is_next_day):
     les_plan = ['']
-    for sheet_days in ws['B2':'B38']:
+    wc = get_week_sheet()
+    for sheet_days in wc['B2':'B38']:
         for cell_days in sheet_days:
             if cell_days.value == f'{is_next_day}':
                 position_class_1 = letter[cell_days.column + 1] + str(cell_days.row)
                 position_class_2 = letter[cell_days.column + 11] + str(cell_days.row)
-                for sheet_class in ws[f'{position_class_1}':f'{position_class_2}']:
+                for sheet_class in wc[f'{position_class_1}':f'{position_class_2}']:
                     for cell_class in sheet_class:
                         if cell_class.value == f'{is_class}':
                             position_plan_1 = letter[cell_class.column - 1] + str(cell_class.row + 1)
                             position_plan_2 = letter[cell_class.column - 1] + str(cell_class.row + 8)
-                            for sheet_lesson in ws[f'{position_plan_1}':f'{position_plan_2}']:
+                            for sheet_lesson in wc[f'{position_plan_1}':f'{position_plan_2}']:
                                 for cell_lesson in sheet_lesson:
                                     if cell_lesson.value is None:
                                         break
