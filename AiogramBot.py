@@ -1,13 +1,12 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, Message
 from aiogram import Bot, Dispatcher, executor, types
 from Openpyxl_func import *
-from Token import Token_API
 from datetime import date
 import calendar
 import asyncio
 import time
 
-bot = Bot(Token_API)
+bot = Bot(os.environ.get("BOT_API_TOKEN"))
 dp = Dispatcher(bot)
 lock = asyncio.Lock()
 
