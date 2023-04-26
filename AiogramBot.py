@@ -72,7 +72,8 @@ async def tt(message: types.Message):
     else:
         the_right_day = 'Понедельник'
     the_right_class = message.get_args()
-    output = LesPlan(the_right_class, the_right_day)
+    async with lock:
+        output = LesPlan(the_right_class, the_right_day)
     await bot.send_message(message.chat.id, text=output)
 
 
