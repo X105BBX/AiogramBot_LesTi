@@ -22,8 +22,6 @@ def WithoutTeacher(full_name, next_day):
             if cell_day.value == f'{next_day}':
                 position_day_1 = letter[cell_day.column + 1] + str(cell_day.row + 1)
                 position_day_2 = letter[cell_day.column + 8] + str(cell_day.row + 8)
-                position_day_3 = letter[cell_day.column + 9] + str(cell_day.row + 1)
-                position_day_4 = letter[cell_day.column + 11] + str(cell_day.row + 8)
 
     cabinet = ""
     for teacher in teachers:
@@ -78,83 +76,3 @@ def LesPlan(is_class, is_next_day):
                             df = pandas.DataFrame(result)
                             return df
                     return 'Такого класса не существует'
-
-
-
-
-
-
-
-
-# def OfficeNumber(is_continue):
-#     spisok = set()
-#     if is_continue:
-#         for sheet_number in ws['D3':'N46']:
-#             for cell_number in sheet_number:
-#                 chislo = re.findall(r'\d{3}', str(cell_number.value))
-#                 spisok.add(str(chislo))
-#     print(*spisok)
-#
-#
-# print(OfficeNumber(True))
-
-
-# def les_plan(is_class):
-#     book = openpyxl.open('C:\\Users\\Дмитрий\\PycharmProjects\\Da\\documents\\Расписание уроков.xlsx')
-#     wsheet = book.active
-#     for sheet_1 in wsheet['B2':'G9']:
-#         for cell_2 in sheet_1:
-#             if cell_2.value == f'{is_class}':
-#                 posizia_1 = letter[cell_2.column - 1] + str(cell_2.row + 1)
-#                 posizia_2 = letter[cell_2.column] + str(cell_2.row + 7)
-#                 for cell_3 in wsheet[f'{posizia_1}':f'{posizia_2}']:
-#                     for bruh in cell_3:
-#                         if any(number.isdigit() for number in f'{bruh.value}'):
-#                             stolb_2.append(bruh.value)
-#                         elif bruh.value is None:
-#                             break
-#                         else:
-#                             stolb_1.append(bruh.value)
-#
-#     vivod = {f'{is_class}': stolb_1,
-#              'каб': stolb_2}
-#     df = pandas.DataFrame(vivod)
-#     df_1 = df
-#     return df_1
-
-
-# for row_1 in wsheet.iter_rows(min_row=3, max_col=3, max_row=9):
-#     for cell_1 in row_1:
-#         if cell_1.value == None:
-#             pass
-#         else:
-#             print(cell_1.value)
-# print('================')
-# for sheet in wsheet['B3':'C8']:
-#     for bruh in sheet:
-#         if any(number.isdigit() for number in f'{bruh.value}'):
-#             print(bruh.value)
-#         else:
-#             print(bruh.value, end=' ')
-# print('================')
-
-
-# stolb_1 = []
-# stolb_2 = []
-#
-# cleal = input('Введи: ')
-# book = openpyxl.open('C:\\Users\\Дмитрий\\PycharmProjects\\Da\\documents\\неа.xlsx')
-# wsheet = book.active
-# for sheet_1 in wsheet['B2':'G9']:
-#     for cell_2 in sheet_1:
-#         if cell_2.value == f'{cleal}':
-#             posizia_1 = letter[cell_2.column - 1] + str(cell_2.row + 1)
-#             posizia_2 = letter[cell_2.column] + str(cell_2.row + 7)
-#             for cell_3 in wsheet[f'{posizia_1}':f'{posizia_2}']:
-#                 for bruh in cell_3:
-#                     if any(number.isdigit() for number in f'{bruh.value}'):
-#                         stolb_2.append(bruh.value)
-#                     elif bruh.value is None:
-#                         break
-#                     else:
-#                         stolb_1.append(bruh.value)
