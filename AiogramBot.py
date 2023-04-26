@@ -4,10 +4,12 @@ from Openpyxl_func import *
 from Token import Token_API
 from datetime import date
 import calendar
+import asyncio
 import time
 
 bot = Bot(Token_API)
 dp = Dispatcher(bot)
+lock = asyncio.Lock()
 
 
 async def on_startup(_):
@@ -46,7 +48,8 @@ async def tcr_remove(message: Message):
     else:
         the_right_day = 'Понедельник'
     full_name = message.get_args()
-    action = WithoutTeacher(full_name, the_right_day)
+    async with lock:
+        action = WithoutTeacher(full_name, the_right_day)
     if action is True:
         await bot.send_message(message.chat.id, text='Расписание успешно изменено')
     else:
